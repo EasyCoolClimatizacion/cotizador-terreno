@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización - EasyCool Climatización</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        
+        /* --- ESTILOS DE IMPRESIÓN PRO --- */
+        @page {
+            size: letter;
+            margin: 0mm; 
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { 
+                background-color: white;
+                padding: 10mm 12mm !important; 
+            }
+            #cotizacion-container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            /* Asegurar fondos en impresión */
+            .bg-slate-50 { background-color: #F8FAFC !important; }
+            .bg-blue-600 { background-color: #2563EB !important; color: white !important; }
+            .bg-slate-800 { background-color: #1E293B !important; color: white !important; }
+            .bg-gray-100 { background-color: #F3F4F6 !important; }
+            
+            /* Bordes nítidos */
+            .border-print { border: 1px solid #E2E8F0 !important; }
+            
+            /* Layout forzado */
+            .force-row-print {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: flex-end !important;
+            }
+            
+            input, textarea {
+                background: transparent !important;
+                border: none !important; 
+                padding: 0 !important;
+            }
+            /* Mantener bordes de la tabla y contenedores */
+            td, th { border-color: #CBD5E1 !important; }
+        }
+
+        /* --- LOGICA DE AUTO-FIT (COMPACTACION) --- */
+        .compact-mode .input-table, 
+        .compact-mode #items-body td,
+        .compact-mode .total-neto {
+            font-size: 0.75rem; 
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        .compact-mode textarea.input-table { line-height: 1.2; }
+        .compact-mode .section-box { padding: 12px; margin-bottom: 12px; }
+        .compact-mode header { margin-bottom: 10px; }
+        .compact-mode hr { margin-bottom: 10px; margin-top: 5px; }
+        .compact-mode .mb-8 { margin-bottom: 1rem !important; }
+
+        .ultra-compact-mode .input-table, 
+        .ultra-compact-mode #items-body td,
+        .ultra-compact-mode .total-neto {
+            font-size: 0.7rem; 
+            padding-top: 1px;
+            padding-bottom: 1px;
+        }
+        .ultra-compact-mode .section-box { padding: 8px; margin-bottom: 8px; }
+        .ultra-compact-mode header { margin-bottom: 5px; }
+        .ultra-compact-mode .w-20 { width: 3.5rem; height: 3.5rem; } 
+        .ultra-compact-mode .text-3xl { font-size: 1.25rem; } 
+        .ultra-compact-mode .text-2xl { font-size: 1.1rem; } 
+        .ultra-compact-mode .p-4 { padding: 0.5rem; } 
+        .ultra-compact-mode .mb-8, .ultra-compact-mode .mb-6 { margin-bottom: 0.5rem !important; }
+        .ultra-compact-mode .gap-8 { gap: 1rem; }
+
+        /* ESTILOS EN PANTALLA */
+        .input-clean {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .input-clean:hover { border-color: #CBD5E1; background: white; }
+        .input-clean:focus { 
+            border-color: #2563EB; 
+            background: white; 
+            outline: none; 
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-table {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-table:focus { outline: none; background: #F8FAFC; }
+
+        .section-box {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        textarea { resize: vertical; }
+        th { background-color: #F3F4F6; }
+    </style>
+</head>
+<body class="bg-gray-100 p-6 sm:p-10 min-h-screen flex flex-col items-center">
+
+    <div class="w-full max-w-[21.59cm] bg-white p-10 sm:p-12 shadow-xl border border-gray-200 transition-all duration-500" id="cotizacion-container" style="min-height: 27.94cm;">
+        
+        <!-- ENCABEZADO -->
+        <header class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 transition-all">
+            <div class="flex items-center gap-5 mb-4 sm:mb-0 transition-all">
+                <div class="w-20 h-20 flex-shrink-0 transition-all">
+                    <svg width="100%" height="100%" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect y="5" width="50" height="10" rx="5" fill="#3B82F6" opacity="0.8"/>
+                        <rect x="5" y="20" width="45" height="10" rx="5" fill="#60A5FA" opacity="0.9"/>
+                        <rect x="10" y="35" width="40" height="10" rx="5" fill="#93C5FD"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col items-start font-poppins leading-tight transition-all">
+                    <span class="text-3xl font-bold text-gray-800 uppercase tracking-wider transition-all">EASYCOOL</span>
+                    <span class="text-lg font-normal text-gray-500 capitalize transition-all">Climatización</span>
+                </div>
+            </div>
+            <div class="text-center sm:text-right font-poppins text-sm text-gray-600 space-y-1 transition-all">
+                <p class="font-bold text-gray-800 text-base">EasyCool Climatización</p>
+                <p>RUT: 77.448.234-2</p>
+                <p>ventas@easycoolclimatizacion.com</p>
+                <p>+569 5777 6174 / +569 4489 4101</p>
+                <p>Providencia, Santiago</p>
+            </div>
+        </header>
+
+        <hr class="border-t-2 border-gray-100 mb-6 transition-all">
+
+        <!-- BARRA DE TÍTULO -->
+        <div class="flex justify-between items-center mb-8 bg-gray-50 text-gray-800 p-4 rounded-md border border-gray-200 print:bg-gray-50 print:border-gray-200 transition-all">
+            <h2 class="text-2xl font-bold font-poppins tracking-wide uppercase pl-2 text-gray-900 transition-all">Cotización</h2>
+            <div class="flex gap-6 pr-2">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">N° Documento</span>
+                    <input type="text" id="cotizacion_n" placeholder="2024-001" class="bg-transparent text-right font-mono font-bold text-gray-900 w-24 border-none focus:ring-0 placeholder-gray-400">
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Fecha Emisión</span>
+                    <input type="date" id="fecha" class="bg-transparent text-right font-mono text-gray-900 w-32 border-none focus:ring-0">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE CLIENTE -->
+        <section class="mb-8 transition-all">
+            <div class="section-box p-5 border-print transition-all">
+                <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 border-b border-gray-200 pb-2">Información del Cliente</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-4">
+                    <!-- Fila 1 -->
+                    <div class="md:col-span-8">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Cliente / Razón Social</label>
+                        <input type="text" id="cliente" placeholder="Nombre Completo del Cliente" class="input-clean font-bold text-gray-800 text-base bg-white border border-gray-200 w-full">
+                    </div>
+                    <div class="md:col-span-4">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">RUT / ID</label>
+                        <input type="text" id="rut_cliente" placeholder="Ej: 12.345.678-9" class="input-clean text-sm bg-white border border-gray-200 w-full">
+                    </div>
+                    
+                    <!-- Fila 2 -->
+                    <div class="md:col-span-8">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Dirección del Proyecto</label>
+                        <input type="text" id="direccion" placeholder="Calle, Comuna, Ciudad" class="input-clean text-sm bg-white border border-gray-200 w-full">
+                    </div>
+                    <div class="md:col-span-4">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Teléfono / Contacto</label>
+                        <input type="text" id="telefono" placeholder="+569..." class="input-clean text-sm bg-white border border-gray-200 w-full">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABLA DE ÍTEMS -->
+        <section class="mb-8 transition-all">
+            <div class="border border-gray-200 rounded-t-md overflow-hidden border-print">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 text-xs uppercase tracking-wider print:bg-gray-100">
+                            <th class="py-3 px-4 w-16 text-center font-bold border-r border-gray-200 transition-all bg-gray-100">Cant.</th>
+                            <th class="py-3 px-4 font-bold border-r border-gray-200 transition-all bg-gray-100">Descripción Detallada</th>
+                            <th class="py-3 px-4 w-32 text-right font-bold border-r border-gray-200 transition-all bg-gray-100">P. Unitario</th>
+                            <th class="py-3 px-4 w-36 text-right font-bold transition-all bg-gray-100">Total</th>
+                            <th class="w-8 no-print bg-white"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-body" class="text-sm text-gray-700 transition-all">
+                        <!-- Filas dinámicas -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="addRow" class="mt-2 w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 font-bold text-xs rounded hover:border-blue-500 hover:text-blue-600 transition-colors no-print">
+                + AGREGAR ÍTEM
+            </button>
+        </section>
+        
+        <!-- RESUMEN FINAL -->
+        <div class="break-inside-avoid">
+            
+            <!-- TOTALES -->
+            <section class="flex justify-end mb-4 transition-all"> <!-- Reducido mb-8 a mb-4 -->
+                <div class="w-full md:w-1/2 lg:w-5/12">
+                    <div class="bg-white border border-gray-200 rounded-md p-0 overflow-hidden border-print transition-all">
+                        <div class="p-4 space-y-3 transition-all">
+                            <div class="flex justify-between items-center text-gray-600 text-sm">
+                                <span>Subtotal Neto</span>
+                                <span id="subtotal" class="font-mono font-semibold">$0</span>
+                            </div>
+                            <div class="flex justify-between items-center text-gray-600 text-sm">
+                                <span>Descuento</span>
+                                <div class="flex items-center gap-1 justify-end">
+                                    <span class="text-gray-400">- $</span>
+                                    <input type="number" id="descuento" class="w-20 text-right font-mono text-sm border-b border-gray-200 focus:border-blue-500 outline-none p-0" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-gray-600 text-sm">
+                                <span>IVA (19%)</span>
+                                <span id="iva" class="font-mono font-semibold">$0</span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-600 p-4 flex justify-between items-center text-white print:bg-blue-600 print:text-white transition-all">
+                            <span class="font-bold text-lg uppercase tracking-wide">Total a Pagar</span>
+                            <span id="total" class="font-bold text-xl font-mono">$0</span>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 text-right mt-2">* Cotización válida en pesos chilenos.</p>
+                </div>
+            </section>
+
+            <!-- TÉRMINOS Y DATOS BANCARIOS (Compactado) -->
+            <section class="mt-4 transition-all border-t border-gray-200 pt-4 print:mt-2 print:pt-2"> <!-- Márgenes reducidos a la mitad -->
+                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start"> <!-- gap-8 bajado a gap-4 -->
+                     
+                     <!-- Términos Editables -->
+                     <div class="md:col-span-6 pr-2"> <!-- Cambiado a 6 columnas para balance -->
+                         <h4 class="font-bold text-gray-700 uppercase text-[10px] mb-1">Términos y Condiciones Generales</h4>
+                         <textarea class="w-full text-[10px] text-gray-500 leading-relaxed bg-transparent border-none p-0 focus:ring-0 resize-none h-28" placeholder="Edite aquí las condiciones...">1. La validez de esta oferta es de 10 días hábiles.
+2. El pago del 50% de anticipo confirma la aceptación de este presupuesto y la reserva de la fecha de instalación.
+3. El 50% restante se paga cuando se finaliza el trabajo.
+4. Garantía de instalación: 1 año. Garantía de equipos: Según fabricante (requiere mantención al día).</textarea>
+                     </div>
+                     
+                     <!-- DATOS DE TRANSFERENCIA -->
+                     <div class="md:col-span-6"> <!-- Cambiado a 6 columnas -->
+                         <div class="bg-gray-50 border border-gray-200 rounded p-3 text-xs"> <!-- Padding reducido p-4 a p-3 -->
+                             <h4 class="font-bold text-blue-600 uppercase mb-2 flex items-center gap-2 text-[11px]">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                 Datos para Transferencia
+                             </h4>
+                             <div class="space-y-0.5 text-gray-700"> <!-- Espaciado vertical reducido -->
+                                 <input type="text" class="w-full bg-transparent font-bold border-none p-0 focus:ring-0 placeholder-gray-400 text-sm" value="Banco Bci" placeholder="Nombre del Banco">
+                                 
+                                 <div class="flex items-center gap-2">
+                                     <span class="font-semibold w-16 text-[10px] text-gray-500 uppercase">Tipo:</span>
+                                     <input type="text" class="w-full bg-transparent border-none p-0 focus:ring-0" value="Cuenta corriente" placeholder="Tipo de Cuenta">
+                                 </div>
+                                 
+                                 <div class="flex items-center gap-2">
+                                     <span class="font-semibold w-16 text-[10px] text-gray-500 uppercase">N°:</span>
+                                     <input type="text" class="w-full bg-transparent border-none p-0 focus:ring-0 font-mono font-medium" value="97512508" placeholder="Número de Cuenta">
+                                 </div>
+                                 
+                                 <div class="flex items-center gap-2">
+                                     <span class="font-semibold w-16 text-[10px] text-gray-500 uppercase">RUT:</span>
+                                     <input type="text" class="w-full bg-transparent border-none p-0 focus:ring-0" value="77.448.234-2" readonly>
+                                 </div>
+                                 
+                                 <div class="flex items-start gap-2">
+                                     <span class="font-semibold w-16 mt-0.5 text-[10px] text-gray-500 uppercase">Correo:</span>
+                                     <textarea class="w-full bg-transparent border-none p-0 focus:ring-0 resize-none overflow-hidden" rows="2" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">ventas@easycoolclimatizacion.com</textarea>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <!-- BOTÓN DE IMPRESIÓN -->
+    <div class="fixed bottom-8 right-8 no-print z-50">
+        <button onclick="window.print()" class="bg-slate-900 hover:bg-black text-white font-bold py-4 px-6 rounded-full shadow-2xl flex items-center gap-3 transition-all transform hover:scale-105 border-2 border-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>
+            IMPRIMIR
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const itemsBody = document.getElementById('items-body');
+            const addRowBtn = document.getElementById('addRow');
+            const discountInput = document.getElementById('descuento');
+            const container = document.getElementById('cotizacion-container');
+            
+            const formatCurrency = (value) => {
+                return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(value);
+            };
+
+            const optimizeLayout = () => {
+                const rows = itemsBody.querySelectorAll('tr').length;
+                if (rows > 12) {
+                    container.classList.add('ultra-compact-mode');
+                    container.classList.remove('compact-mode');
+                } else if (rows > 7) {
+                    container.classList.add('compact-mode');
+                    container.classList.remove('ultra-compact-mode');
+                } else {
+                    container.classList.remove('compact-mode', 'ultra-compact-mode');
+                }
+            };
+
+            const calculateTotals = () => {
+                let subtotal = 0;
+                const rows = itemsBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const qtyInput = row.querySelector('.qty');
+                    const priceInput = row.querySelector('.price');
+                    const totalInput = row.querySelector('.total-neto');
+
+                    if(qtyInput && priceInput) {
+                        const qty = parseFloat(qtyInput.value) || 0;
+                        const price = parseFloat(priceInput.value) || 0;
+                        const rowTotal = qty * price;
+                        
+                        if(totalInput) totalInput.textContent = formatCurrency(rowTotal);
+                        subtotal += rowTotal;
+                    }
+                });
+
+                const discount = parseFloat(discountInput.value) || 0;
+                const taxableAmount = Math.max(0, subtotal - discount);
+                const iva = taxableAmount * 0.19;
+                const total = taxableAmount + iva;
+
+                document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+                document.getElementById('iva').textContent = formatCurrency(iva);
+                document.getElementById('total').textContent = formatCurrency(total);
+                
+                optimizeLayout();
+            };
+
+            const createRow = () => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-200 hover:bg-gray-50 transition-colors group align-top'; 
+                
+                row.innerHTML = `
+                    <td class="p-2 border-r border-gray-200"><input type="number" class="qty input-table text-center font-bold text-gray-800" value="1" min="1" oninput="this.value = Math.abs(this.value)"></td>
+                    <td class="p-2 border-r border-gray-200"><textarea class="input-table resize-y overflow-hidden text-gray-700" rows="1" placeholder="Descripción del servicio..." oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea></td>
+                    <td class="p-2 border-r border-gray-200"><input type="number" class="price input-table text-right text-gray-800" placeholder="0" min="0"></td>
+                    <td class="p-2 text-right"><span class="total-neto block w-full py-1 px-2 font-mono text-gray-800 font-bold text-sm">$0</span></td>
+                    <td class="p-2 text-center no-print">
+                        <button class="delete-row text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">✕</button>
+                    </td>
+                `;
+                itemsBody.appendChild(row);
+                
+                const inputs = row.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('input', calculateTotals);
+                });
+                
+                optimizeLayout();
+            };
+
+            discountInput.addEventListener('input', calculateTotals);
+
+            itemsBody.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-row')) {
+                    const row = e.target.closest('tr');
+                    if (itemsBody.children.length > 1) {
+                        row.remove();
+                    } else {
+                        row.querySelector('.qty').value = 1;
+                        row.querySelector('textarea').value = '';
+                        row.querySelector('.price').value = '';
+                    }
+                    calculateTotals();
+                    optimizeLayout();
+                }
+            });
+
+            addRowBtn.addEventListener('click', createRow);
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').value = today;
+            
+            createRow(); createRow(); createRow(); createRow();
+            
+            const firstRow = itemsBody.querySelector('tr');
+            if(firstRow) {
+                firstRow.querySelector('textarea').value = "Visita Técnica y Diagnóstico HVAC";
+                firstRow.querySelector('.price').value = 45000;
+            }
+            calculateTotals();
+        });
+    </script>
+</body>
+</html>
