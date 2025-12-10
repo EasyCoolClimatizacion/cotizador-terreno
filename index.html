@@ -17,17 +17,19 @@
         
         .font-poppins { font-family: 'Poppins', sans-serif; }
         
-        /* --- ESTILOS DE IMPRESIÓN PRO --- */
+        /* --- ESTILOS DE IMPRESIÓN PRO (OPTIMIZADOS PARA CARTA) --- */
         @page {
             size: letter;
-            margin: 0mm; 
+            margin: 0mm; /* Control total desde el body */
         }
 
         @media print {
             .no-print { display: none !important; }
             body { 
                 background-color: white;
-                padding: 10mm 12mm !important; 
+                /* Padding ajustado para maximizar espacio vertical */
+                padding: 8mm 10mm !important; 
+                height: auto;
             }
             #cotizacion-container {
                 box-shadow: none;
@@ -35,6 +37,9 @@
                 padding: 0;
                 margin: 0;
                 max-width: 100%;
+                /* CRÍTICO: Altura automática para evitar cortes */
+                min-height: 0 !important; 
+                height: auto !important;
             }
             
             /* Asegurar fondos en impresión */
@@ -42,6 +47,7 @@
             .bg-blue-600 { background-color: #2563EB !important; color: white !important; }
             .bg-slate-800 { background-color: #1E293B !important; color: white !important; }
             .bg-gray-100 { background-color: #F3F4F6 !important; }
+            .bg-gray-50 { background-color: #F9FAFB !important; }
             
             /* Bordes nítidos */
             .border-print { border: 1px solid #E2E8F0 !important; }
@@ -60,9 +66,16 @@
             }
             /* Mantener bordes de la tabla y contenedores */
             td, th { border-color: #CBD5E1 !important; }
+
+            /* Compactar márgenes verticales al imprimir */
+            header { margin-bottom: 10px !important; }
+            .section-box { padding: 8px !important; margin-bottom: 8px !important; }
+            hr { margin: 8px 0 !important; }
+            .mb-6 { margin-bottom: 0.5rem !important; }
+            .mb-8 { margin-bottom: 0.5rem !important; }
         }
 
-        /* --- LOGICA DE AUTO-FIT (COMPACTACION) --- */
+        /* --- LOGICA DE AUTO-FIT (COMPACTACION INTELIGENTE) --- */
         .compact-mode .input-table, 
         .compact-mode #items-body td,
         .compact-mode .total-neto {
@@ -71,10 +84,10 @@
             padding-bottom: 2px;
         }
         .compact-mode textarea.input-table { line-height: 1.2; }
-        .compact-mode .section-box { padding: 12px; margin-bottom: 12px; }
-        .compact-mode header { margin-bottom: 10px; }
-        .compact-mode hr { margin-bottom: 10px; margin-top: 5px; }
-        .compact-mode .mb-8 { margin-bottom: 1rem !important; }
+        .compact-mode .section-box { padding: 8px; margin-bottom: 8px; }
+        .compact-mode header { margin-bottom: 5px; }
+        .compact-mode hr { margin-bottom: 5px; margin-top: 5px; }
+        .compact-mode .mb-6 { margin-bottom: 0.5rem !important; }
 
         .ultra-compact-mode .input-table, 
         .ultra-compact-mode #items-body td,
@@ -83,14 +96,14 @@
             padding-top: 1px;
             padding-bottom: 1px;
         }
-        .ultra-compact-mode .section-box { padding: 8px; margin-bottom: 8px; }
-        .ultra-compact-mode header { margin-bottom: 5px; }
-        .ultra-compact-mode .w-20 { width: 3.5rem; height: 3.5rem; } 
-        .ultra-compact-mode .text-3xl { font-size: 1.25rem; } 
-        .ultra-compact-mode .text-2xl { font-size: 1.1rem; } 
-        .ultra-compact-mode .p-4 { padding: 0.5rem; } 
-        .ultra-compact-mode .mb-8, .ultra-compact-mode .mb-6 { margin-bottom: 0.5rem !important; }
-        .ultra-compact-mode .gap-8 { gap: 1rem; }
+        .ultra-compact-mode .section-box { padding: 6px; margin-bottom: 6px; }
+        .ultra-compact-mode header { margin-bottom: 2px; }
+        .ultra-compact-mode .w-20 { width: 3rem; height: 3rem; } 
+        .ultra-compact-mode .text-3xl { font-size: 1.2rem; } 
+        .ultra-compact-mode .text-2xl { font-size: 1rem; } 
+        .ultra-compact-mode .p-3 { padding: 0.4rem; } 
+        .ultra-compact-mode .mb-6 { margin-bottom: 0.4rem !important; }
+        .ultra-compact-mode .gap-4 { gap: 0.5rem; }
 
         /* ESTILOS EN PANTALLA */
         .input-clean {
@@ -131,7 +144,8 @@
 </head>
 <body class="bg-gray-100 p-6 sm:p-10 min-h-screen flex flex-col items-center">
 
-    <div class="w-full max-w-[21.59cm] bg-white p-10 sm:p-12 shadow-xl border border-gray-200 transition-all duration-500" id="cotizacion-container" style="min-height: 27.94cm;">
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="w-full max-w-[21.59cm] bg-white p-10 sm:p-12 shadow-xl border border-gray-200 transition-all duration-500" id="cotizacion-container">
         
         <!-- ENCABEZADO -->
         <header class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6 transition-all">
@@ -160,7 +174,7 @@
         <hr class="border-t-2 border-gray-100 mb-6 transition-all">
 
         <!-- BARRA DE TÍTULO -->
-        <div class="flex justify-between items-center mb-8 bg-gray-50 text-gray-800 p-4 rounded-md border border-gray-200 print:bg-gray-50 print:border-gray-200 transition-all">
+        <div class="flex justify-between items-center mb-6 bg-gray-50 text-gray-800 p-3 rounded-md border border-gray-200 print:bg-gray-50 print:border-gray-200 transition-all">
             <h2 class="text-2xl font-bold font-poppins tracking-wide uppercase pl-2 text-gray-900 transition-all">Cotización</h2>
             <div class="flex gap-6 pr-2">
                 <div class="flex flex-col items-end">
@@ -175,28 +189,25 @@
         </div>
 
         <!-- SECCIÓN DE CLIENTE -->
-        <section class="mb-8 transition-all">
-            <div class="section-box p-5 border-print transition-all">
-                <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 border-b border-gray-200 pb-2">Información del Cliente</h3>
+        <section class="mb-6 transition-all">
+            <div class="section-box p-4 border-print transition-all">
+                <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3 border-b border-gray-200 pb-2">Información del Cliente</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-4">
-                    <!-- Fila 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-3">
                     <div class="md:col-span-8">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Cliente / Razón Social</label>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">Cliente / Razón Social</label>
                         <input type="text" id="cliente" placeholder="Nombre Completo del Cliente" class="input-clean font-bold text-gray-800 text-base bg-white border border-gray-200 w-full">
                     </div>
                     <div class="md:col-span-4">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">RUT / ID</label>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">RUT / ID</label>
                         <input type="text" id="rut_cliente" placeholder="Ej: 12.345.678-9" class="input-clean text-sm bg-white border border-gray-200 w-full">
                     </div>
-                    
-                    <!-- Fila 2 -->
                     <div class="md:col-span-8">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Dirección del Proyecto</label>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">Dirección del Proyecto</label>
                         <input type="text" id="direccion" placeholder="Calle, Comuna, Ciudad" class="input-clean text-sm bg-white border border-gray-200 w-full">
                     </div>
                     <div class="md:col-span-4">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-1">Teléfono / Contacto</label>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">Teléfono / Contacto</label>
                         <input type="text" id="telefono" placeholder="+569..." class="input-clean text-sm bg-white border border-gray-200 w-full">
                     </div>
                 </div>
@@ -204,15 +215,15 @@
         </section>
 
         <!-- TABLA DE ÍTEMS -->
-        <section class="mb-8 transition-all">
+        <section class="mb-6 transition-all">
             <div class="border border-gray-200 rounded-t-md overflow-hidden border-print">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 text-xs uppercase tracking-wider print:bg-gray-100">
-                            <th class="py-3 px-4 w-16 text-center font-bold border-r border-gray-200 transition-all bg-gray-100">Cant.</th>
-                            <th class="py-3 px-4 font-bold border-r border-gray-200 transition-all bg-gray-100">Descripción Detallada</th>
-                            <th class="py-3 px-4 w-32 text-right font-bold border-r border-gray-200 transition-all bg-gray-100">P. Unitario</th>
-                            <th class="py-3 px-4 w-36 text-right font-bold transition-all bg-gray-100">Total</th>
+                            <th class="py-2 px-3 w-16 text-center font-bold border-r border-gray-200 transition-all bg-gray-100">Cant.</th>
+                            <th class="py-2 px-3 font-bold border-r border-gray-200 transition-all bg-gray-100">Descripción Detallada</th>
+                            <th class="py-2 px-3 w-32 text-right font-bold border-r border-gray-200 transition-all bg-gray-100">P. Unitario</th>
+                            <th class="py-2 px-3 w-36 text-right font-bold transition-all bg-gray-100">Total</th>
                             <th class="w-8 no-print bg-white"></th>
                         </tr>
                     </thead>
@@ -230,10 +241,10 @@
         <div class="break-inside-avoid">
             
             <!-- TOTALES -->
-            <section class="flex justify-end mb-4 transition-all"> <!-- Reducido mb-8 a mb-4 -->
+            <section class="flex justify-end mb-4 transition-all">
                 <div class="w-full md:w-1/2 lg:w-5/12">
                     <div class="bg-white border border-gray-200 rounded-md p-0 overflow-hidden border-print transition-all">
-                        <div class="p-4 space-y-3 transition-all">
+                        <div class="p-3 space-y-2 transition-all">
                             <div class="flex justify-between items-center text-gray-600 text-sm">
                                 <span>Subtotal Neto</span>
                                 <span id="subtotal" class="font-mono font-semibold">$0</span>
@@ -250,36 +261,36 @@
                                 <span id="iva" class="font-mono font-semibold">$0</span>
                             </div>
                         </div>
-                        <div class="bg-blue-600 p-4 flex justify-between items-center text-white print:bg-blue-600 print:text-white transition-all">
+                        <div class="bg-blue-600 p-3 flex justify-between items-center text-white print:bg-blue-600 print:text-white transition-all">
                             <span class="font-bold text-lg uppercase tracking-wide">Total a Pagar</span>
                             <span id="total" class="font-bold text-xl font-mono">$0</span>
                         </div>
                     </div>
-                    <p class="text-[10px] text-gray-400 text-right mt-2">* Cotización válida en pesos chilenos.</p>
+                    <p class="text-[10px] text-gray-400 text-right mt-1">* Cotización válida en pesos chilenos.</p>
                 </div>
             </section>
 
-            <!-- TÉRMINOS Y DATOS BANCARIOS (Compactado) -->
-            <section class="mt-4 transition-all border-t border-gray-200 pt-4 print:mt-2 print:pt-2"> <!-- Márgenes reducidos a la mitad -->
-                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start"> <!-- gap-8 bajado a gap-4 -->
+            <!-- TÉRMINOS Y DATOS BANCARIOS -->
+            <section class="mt-2 transition-all border-t border-gray-200 pt-3 print:mt-2 print:pt-2">
+                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                      
                      <!-- Términos Editables -->
-                     <div class="md:col-span-6 pr-2"> <!-- Cambiado a 6 columnas para balance -->
+                     <div class="md:col-span-6 pr-2">
                          <h4 class="font-bold text-gray-700 uppercase text-[10px] mb-1">Términos y Condiciones Generales</h4>
-                         <textarea class="w-full text-[10px] text-gray-500 leading-relaxed bg-transparent border-none p-0 focus:ring-0 resize-none h-28" placeholder="Edite aquí las condiciones...">1. La validez de esta oferta es de 10 días hábiles.
+                         <textarea class="w-full text-[9px] text-gray-500 leading-relaxed bg-transparent border-none p-0 focus:ring-0 resize-none h-24" placeholder="Edite aquí las condiciones...">1. La validez de esta oferta es de 10 días hábiles.
 2. El pago del 50% de anticipo confirma la aceptación de este presupuesto y la reserva de la fecha de instalación.
 3. El 50% restante se paga cuando se finaliza el trabajo.
 4. Garantía de instalación: 1 año. Garantía de equipos: Según fabricante (requiere mantención al día).</textarea>
                      </div>
                      
                      <!-- DATOS DE TRANSFERENCIA -->
-                     <div class="md:col-span-6"> <!-- Cambiado a 6 columnas -->
-                         <div class="bg-gray-50 border border-gray-200 rounded p-3 text-xs"> <!-- Padding reducido p-4 a p-3 -->
+                     <div class="md:col-span-6">
+                         <div class="bg-gray-50 border border-gray-200 rounded p-3 text-xs">
                              <h4 class="font-bold text-blue-600 uppercase mb-2 flex items-center gap-2 text-[11px]">
                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                                  Datos para Transferencia
                              </h4>
-                             <div class="space-y-0.5 text-gray-700"> <!-- Espaciado vertical reducido -->
+                             <div class="space-y-0.5 text-gray-700">
                                  <input type="text" class="w-full bg-transparent font-bold border-none p-0 focus:ring-0 placeholder-gray-400 text-sm" value="Banco Bci" placeholder="Nombre del Banco">
                                  
                                  <div class="flex items-center gap-2">
@@ -299,14 +310,13 @@
                                  
                                  <div class="flex items-start gap-2">
                                      <span class="font-semibold w-16 mt-0.5 text-[10px] text-gray-500 uppercase">Correo:</span>
-                                     <textarea class="w-full bg-transparent border-none p-0 focus:ring-0 resize-none overflow-hidden" rows="2" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">ventas@easycoolclimatizacion.com</textarea>
+                                     <textarea class="w-full bg-transparent border-none p-0 focus:ring-0 resize-none overflow-hidden lowercase" rows="2" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">ventas@easycoolclimatizacion.com</textarea>
                                  </div>
                              </div>
                          </div>
                      </div>
                  </div>
             </section>
-
         </div>
 
     </div>
@@ -332,10 +342,10 @@
 
             const optimizeLayout = () => {
                 const rows = itemsBody.querySelectorAll('tr').length;
-                if (rows > 12) {
+                if (rows > 8) {
                     container.classList.add('ultra-compact-mode');
                     container.classList.remove('compact-mode');
-                } else if (rows > 7) {
+                } else if (rows > 5) {
                     container.classList.add('compact-mode');
                     container.classList.remove('ultra-compact-mode');
                 } else {
@@ -419,6 +429,7 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('fecha').value = today;
             
+            // Iniciar con 4 filas
             createRow(); createRow(); createRow(); createRow();
             
             const firstRow = itemsBody.querySelector('tr');
